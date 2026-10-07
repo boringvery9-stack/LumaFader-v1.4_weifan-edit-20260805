@@ -16,3 +16,11 @@ UA MIDI Control：啟用 LumaFader 的 MIDI input 與 MIDI output。
 16bank editor：16bank.html。4bank editor 對應另一套四頁韌體，請勿混用。
 
 本包來自加入 feedback 後、改為四頁前的已安裝版本；本次只整理成獨立下載包。
+
+## English release notes
+
+This update preserves the original four pages × four banks and button CC127→CC0 pulses. USB and TRS inputs receive CC feedback on all channels; software target values are stored by CC and channel. Fader LEDs display the reported target, and external changes re-enable pickup. Received feedback is not echoed.
+
+Enable LumaFader MIDI input and output in UA MIDI Control. Feedback CC/channel must match the fader mapping. Use the 16bank editor.
+
+For an existing v1.4 device, back up first; retain `lib`, `boot.py`, and `settings.toml`. Copy the included Python files and copy `code.py` last, then reconnect USB. Preserve your existing `settings.json` to keep your mappings. The optional included settings snapshot is from before the four-bank migration. This archive packages the previously installed feedback version without changing its bank controls.

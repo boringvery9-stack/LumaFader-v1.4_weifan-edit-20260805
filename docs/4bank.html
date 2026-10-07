@@ -68,26 +68,28 @@
         .btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .btn-save { background-color: var(--save-btn-bg); color: #121212; }
         .btn-backup { background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
+    @media (max-width: 900px) { .banks-grid-2x2 { grid-template-columns: 1fr; } .top-bar { flex-wrap: wrap; gap: 12px; } }
+        @media (max-width: 520px) { .hardware-layout { flex-direction: column; } .buttons-panel { width: auto; align-self: stretch; } .faders-panel { align-self: stretch; } .connection-panel { flex-wrap: wrap; } .page-tabs { flex-wrap: wrap; } .action-bar { flex-wrap: wrap; } }
     </style>
 </head>
 <body class="page-1">
 
     <div class="top-bar">
-        <h1>LUMAFADER — EDITOR — 4bank 版 </h1>
+        <h1>LUMAFADER — 編輯器 / Editor — 4bank </h1>
         <div class="connection-panel">
-            <span id="statusText">預覽預設配置 · 連線後讀取裝置設定</span>
-            <button id="connectBtn">🔌 CONNECT DEVICE</button>
+            <span id="statusText">預覽預設配置 · 連線後讀取裝置設定 / Default preview · Connect to read device settings</span>
+            <button id="connectBtn">🔌 連接裝置 / Connect</button>
         </div>
     </div>
 
-    <p style="text-align:center;color:#aaa">按住最下鍵，再按最上鍵：下一頁 ／ 按住最上鍵，再按最下鍵：上一頁。單鍵長按不切換頁面。</p>
-    <nav style="text-align:center;margin:16px;color:#aaa"><a href="16bank.html" style="color:inherit">16bank 版（4頁 × 4 banks）</a> · <a href="4bank.html" style="color:inherit">4bank 版（4頁 × 1 bank）</a></nav>
+    <p style="text-align:center;color:#aaa">按住最下鍵再按最上鍵：下一頁；反向：上一頁。單鍵長按不切頁。<br>Hold bottom, press top: next page. Hold top, press bottom: previous page. A single-button hold does not change pages.</p>
+    <nav style="text-align:center;margin:16px;color:#aaa"><a href="16bank.html" style="color:inherit">16bank 版 / 16bank (4 Pages × 4 Banks)</a> · <a href="4bank.html" style="color:inherit">4bank 版 / 4bank (4 Pages × 1 Bank)</a></nav>
     <div class="page-tabs" id="pageTabs"></div>
     <div class="container">
         <div class="banks-grid-2x2" id="banksContainer"></div>
         <div class="action-bar">
-            <button id="saveBtn" class="btn btn-save" disabled>💾 SAVE TO HARDWARE</button>
-            <button id="backupBtn" class="btn btn-backup" disabled>⬇ DOWNLOAD PC BACKUP</button>
+            <button id="saveBtn" class="btn btn-save" disabled>💾 儲存至裝置 / Save to device</button>
+            <button id="backupBtn" class="btn btn-backup" disabled>⬇ 下載備份 / Download backup</button>
         </div>
     </div>
 
@@ -113,7 +115,7 @@
         connectBtn.addEventListener('click', async () => {
             try {
                 if (isConnected && writer) {
-                    statusText.innerText = "Requesting data...";
+                    statusText.innerText = "正在讀取設定 / Requesting data...";
                     await writer.write("\n\nCMD:GET_SETTINGS\n");
                     return;
                 }
@@ -121,8 +123,8 @@
                 port = await navigator.serial.requestPort();
                 await port.open({ baudRate: 115200 });
                 
-                statusText.innerText = "Connected, reading...";
-                connectBtn.innerText = "🔄 RELOAD DATA";
+                statusText.innerText = "已連線，讀取中 / Connected, reading...";
+                connectBtn.innerText = "🔄 重新讀取 / Reload";
                 connectBtn.classList.add("connected");
                 isConnected = true;
 
@@ -138,7 +140,7 @@
 
             } catch (err) {
                 statusText.innerText = err.message.includes('already open') ? 
-                    "⚠️ Port in use! Please restart Chrome completely." : "Connection failed: " + err.message;
+                    "⚠️ 連接埠使用中，請完全關閉並重開 Chrome / Port in use. Restart Chrome completely." : "連線失敗 / Connection failed: " + err.message;
             }
         });
 
@@ -168,15 +170,15 @@
                                     const data = JSON.parse(jsonStr);
                                     
                                     if (data.status === "ok") {
-                                        statusText.innerText = "🟢 Write successful! Replug the USB adapter.";
-                                        saveBtn.innerText = "💾 SAVE TO HARDWARE";
+                                        statusText.innerText = "🟢 儲存成功，請重新插拔 USB / Saved. Replug USB.";
+                                        saveBtn.innerText = "💾 儲存至裝置 / Save to device";
                                         saveBtn.disabled = false;
                                     } else if (data.error) {
-                                        statusText.innerText = "❌ Hardware Error: " + data.error;
+                                        statusText.innerText = "❌ 裝置錯誤 / Hardware error: " + data.error;
                                         saveBtn.disabled = false;
                                     } else if (data.PAGE_1_BANKS) {
                                         currentSettings = data;
-                                        statusText.innerText = "🟢 Data Synchronized";
+                                        statusText.innerText = "🟢 設定已同步 / Settings synchronized";
                                         saveBtn.disabled = false;
                                         backupBtn.disabled = false;
                                         renderPage();
@@ -189,7 +191,7 @@
                     }
                 }
             } catch (error) {
-                statusText.innerText = "Connection lost.";
+                statusText.innerText = "連線中斷 / Connection lost.";
                 isConnected = false;
             } finally {
                 reader.releaseLock();
@@ -254,13 +256,13 @@
             document.body.className = `page-${currentPage}`;
             let tabsHtml = '';
             for(let i=1; i<=4; i++) {
-                tabsHtml += `<div class="page-tab ${currentPage === i ? 'active' : ''}" onclick="setPage(${i})">PAGE ${i} · ${["白", "紅", "黃", "綠"][i - 1]}</div>`;
+                tabsHtml += `<div class="page-tab ${currentPage === i ? 'active' : ''}" onclick="setPage(${i})">頁 ${i} / Page ${i} · ${["白 / White", "紅 / Red", "黃 / Yellow", "綠 / Green"][i - 1]}</div>`;
             }
             document.getElementById('pageTabs').innerHTML = tabsHtml;
 
             const container = document.getElementById('banksContainer');
             if (!currentSettings) {
-                container.innerHTML = `<div style="text-align:center; grid-column: span 1; padding: 50px; color:#666;">Click 'CONNECT DEVICE' above to load settings.</div>`;
+                container.innerHTML = `<div style="text-align:center; grid-column: span 1; padding: 50px; color:#666;">請點選上方「連接裝置」讀取設定 / Click Connect to load settings.</div>`;
                 return;
             }
 
@@ -276,10 +278,10 @@
             for(let b=0; b<1; b++) {
                 html += `
                 <div class="bank-card">
-                    <div class="bank-header-title">${["白", "紅", "黃", "綠"][p - 1]} Page</div>
+                    <div class="bank-header-title">${["白 / White", "紅 / Red", "黃 / Yellow", "綠 / Green"][p - 1]} Page</div>
                     <div class="hardware-layout">
                         <div class="buttons-panel">
-                            <div class="section-label">BUTTONS</div>`;
+                            <div class="section-label">按鈕 / Buttons</div>`;
                 
                 [3, 2, 1, 0].forEach(btn_idx => {
                     const btn_cc = (buttons[b] && buttons[b][btn_idx] !== undefined && buttons[b][btn_idx] !== '') ? buttons[b][btn_idx] : '';
@@ -292,32 +294,32 @@
                         if(btn_cc !== '') {
                             dynamicOptions = dynamicOptions.replace(`value="${btn_cc}"`, `value="${btn_cc}" selected`);
                         }
-                        controlAreaHtml = `<div class="col-num"><div class="sub-label">NOTE</div>
+                        controlAreaHtml = `<div class="col-num"><div class="sub-label">音符<br>Note</div>
                                            <select data-bank="${b}" data-type="btn_cc" data-idx="${btn_idx}" onchange="updateData(this)">
                                               ${dynamicOptions}
                                            </select></div>`;
                     } else {
-                        controlAreaHtml = `<div class="col-num"><div class="sub-label">NUM</div><input type="text" data-bank="${b}" data-type="btn_cc" data-idx="${btn_idx}" value="${btn_cc}" onchange="updateData(this)"></div>`;
+                        controlAreaHtml = `<div class="col-num"><div class="sub-label">編號<br>Num</div><input type="text" data-bank="${b}" data-type="btn_cc" data-idx="${btn_idx}" value="${btn_cc}" onchange="updateData(this)"></div>`;
                     }
 
                     html += `
                             <div class="button-row">
-                                <div style="font-size: 11px; font-weight: 600; color: #ddd; width: 32px;">Btn ${btn_idx + 1}</div>
+                                <div style="font-size: 11px; font-weight: 600; color: #ddd; width: 32px;">鍵 ${btn_idx + 1}<br>Btn</div>
                                 <div style="display: flex; gap: 4px;">
                                     <div class="col-type">
-                                        <div class="sub-label">TYPE</div>
+                                        <div class="sub-label">類型<br>Type</div>
                                         <select data-bank="${b}" data-type="btn_type" data-idx="${btn_idx}" onchange="updateData(this)">
                                             <option value="CC" ${btn_type === 'CC' ? 'selected' : ''}>CC</option>
                                             <option value="Note" ${btn_type === 'Note' ? 'selected' : ''}>Note</option>
                                         </select>
                                     </div>
                                     ${controlAreaHtml}
-                                    <div class="col-ch"><div class="sub-label">CH</div><input type="text" data-bank="${b}" data-type="btn_ch" data-idx="${btn_idx}" value="${btn_ch}" onchange="updateData(this)"></div>
+                                    <div class="col-ch"><div class="sub-label">通道<br>Ch</div><input type="text" data-bank="${b}" data-type="btn_ch" data-idx="${btn_idx}" value="${btn_ch}" onchange="updateData(this)"></div>
                                 </div>
                             </div>`;
                 });
 
-                html += `</div><div class="faders-panel"><div class="section-label" style="margin-bottom: 6px;">FADERS (A-D)</div><div class="faders-grid">`;
+                html += `</div><div class="faders-panel"><div class="section-label" style="margin-bottom: 6px;">推子 / Faders (A–D)</div><div class="faders-grid">`;
                 
                 for(let s=0; s<4; s++) {
                     const slider_cc = (banks[b] && banks[b][s] !== undefined) ? banks[b][s] : '';
@@ -326,7 +328,7 @@
                                 <div class="control-item">
                                     <div class="control-header">${labelsFader[s]}</div>
                                     <div class="sub-label">CC</div><input type="text" data-bank="${b}" data-type="fader_cc" data-idx="${s}" value="${slider_cc}" onchange="updateData(this)">
-                                    <div class="sub-label" style="margin-top: 4px;">CH</div><input type="text" data-bank="${b}" data-type="fader_ch" data-idx="${s}" value="${slider_ch_val}" onchange="updateData(this)">
+                                    <div class="sub-label" style="margin-top: 4px;">通道<br>Ch</div><input type="text" data-bank="${b}" data-type="fader_ch" data-idx="${s}" value="${slider_ch_val}" onchange="updateData(this)">
                                 </div>`;
                 }
                 html += `</div></div></div></div>`;
@@ -336,25 +338,25 @@
         
         saveBtn.addEventListener('click', async () => {
             if (!writer || !currentSettings) return;
-            if (!currentSettings.SINGLE_BANK_MODE) { alert('請先安裝四頁版韌體，再使用這個 editor。'); return; }
+            if (!currentSettings.SINGLE_BANK_MODE) { alert('請先安裝四頁版韌體 / Install the 4bank firmware before using this editor.'); return; }
             if (document.activeElement && document.activeElement.tagName === "INPUT") document.activeElement.blur();
             
             for (let p = 1; p <= 4; p++) {
                 for (const suffix of ['BANKS', 'BUTTONS']) {
                     for (const n of currentSettings[`PAGE_${p}_${suffix}`][0]) {
                         if (suffix === 'BUTTONS' && n === '') continue;
-                        if (!Number.isInteger(n) || n < 0 || n > 127) { alert('CC / Note 必須是 0–127 的整數。'); return; }
+                        if (!Number.isInteger(n) || n < 0 || n > 127) { alert('CC / Note 必須是 0–127 的整數 / CC and Note must be integers from 0 to 127.'); return; }
                     }
                 }
                 for (const suffix of ['BANK_SLIDER_CHANNELS', 'BUTTON_CHANNELS']) {
                     for (const ch of currentSettings[`PAGE_${p}_${suffix}`][0]) {
-                        if (ch !== '' && (!Number.isInteger(ch) || ch < 1 || ch > 16)) { alert('Channel 必須是 1–16 或留白。'); return; }
+                        if (ch !== '' && (!Number.isInteger(ch) || ch < 1 || ch > 16)) { alert('Channel 必須是 1–16 或留白 / Channel must be 1–16 or blank.'); return; }
                     }
                 }
             }
-            saveBtn.innerText = "⏳ SAVING...";
+            saveBtn.innerText = "⏳ 儲存中 / Saving...";
             saveBtn.disabled = true;
-            statusText.innerText = "Transferring data. Do not unplug...";
+            statusText.innerText = "傳送中，請勿拔除裝置 / Transferring. Do not unplug...";
 
             const jsonStr = JSON.stringify(currentSettings);
             const fullCmd = `\nCMD:SET_SETTINGS|${jsonStr}\n`;
