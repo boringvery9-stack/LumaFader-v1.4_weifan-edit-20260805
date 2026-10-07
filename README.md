@@ -1,6 +1,6 @@
-# LumaFader 韌體與 Editor
+# LumaFader 韌體與編輯器 / Firmware & Editor
 
-## 2026-10-07 更新
+## 2026-10-07 更新 / Update
 
 | 版本 | 配置 | 韌體 | 網頁 Editor |
 |---|---|---|---|
@@ -9,7 +9,7 @@
 
 兩版均包含 fader MIDI CC 回傳燈號與 pickup 支援。Button 狀態回饋尚未加入。
 
-## 安裝
+## 安裝 / Installation
 
 適用已安裝 LumaFader v1.4 CircuitPython 與原 lib 的裝置。先備份，保留 lib、boot.py、settings.toml。
 解壓縮後將 firmware 內的 .py 複製到裝置，code.py 最後複製，再重新插拔。
@@ -18,3 +18,20 @@
 Editor 必須與韌體版本配對。韌體包內附有設定與操作說明。
 
 原 20260805 資料夾與原網頁入口均保留。
+
+## English
+
+Two independent versions are available. Match the editor to your firmware.
+
+| Version | Layout | Firmware | Web editor |
+|---|---|---|---|
+| 4bank | Four color pages, one bank per page; single-button bank switching removed | [Download 4bank feedback firmware](firmware-4bank-feedback.zip) | [4bank editor](https://boringvery9-stack.github.io/LumaFader-v1.4_weifan-edit-20260805/4bank.html) |
+| 16bank | Four pages, four banks per page; original controls preserved | [Download 16bank feedback firmware](firmware-16bank-feedback.zip) | [16bank editor](https://boringvery9-stack.github.io/LumaFader-v1.4_weifan-edit-20260805/16bank.html) |
+
+Both versions include MIDI CC feedback for fader LEDs and pickup. Button state feedback is not included yet.
+
+Install on an existing LumaFader v1.4 CircuitPython device with the original libraries. Back up first and retain `lib`, `boot.py`, and `settings.toml`. Copy the Python files from `firmware`, copy `code.py` last, then reconnect USB.
+
+For the 4bank migration, also copy the included `settings.json`; it replaces the current mappings with the four-page layout. For 16bank, keep your existing `settings.json` to preserve your mappings. See the README inside each archive for controls and setup.
+
+The original 20260805 folder and original editor URL are preserved.
