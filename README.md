@@ -2,6 +2,11 @@
 
 ## English
 
+### Main differences from the original firmware
+
+- **Added:** Each of the four buttons can send configurable MIDI CC or Note messages.
+- **Trade-off:** The original button gestures for selecting, locking, and combining fader banks are no longer available.
+
 ### Versions
 
 Two independent versions are available. Match the editor to your firmware.
@@ -29,6 +34,11 @@ Hold the bottom button, then press the top button to go to the next page. Hold t
 - **16bank:** Hold a single button to switch banks.
 
 ## 中文
+
+### 與原版韌體的主要差異
+
+- **新增：** 四顆按鈕可獨立設定為 CC 或 Note，直接發送 MIDI 訊息。
+- **取捨：** 無法沿用原版以按鈕即時選擇、鎖定及組合 fader banks 的操作方式。
 
 ### 版本
 
